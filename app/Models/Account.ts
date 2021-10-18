@@ -1,10 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
 import Hash from '@ioc:Adonis/Core/Hash'
-
+import { v4 as uuid } from 'uuid'
 export default class Account extends BaseModel {
   @column({ isPrimary: true, serializeAs: null })
   public id: number
+
+  @column()
+  public secure_id: uuid
 
   @column()
   public email: string
@@ -29,5 +32,10 @@ export default class Account extends BaseModel {
     if (account.$dirty.password) {
       account.password = await Hash.make(account.password)
     }
+  }
+
+  @beforeCreate()
+  public static async assignUuid(account: Account) {
+    account.secure_id = uuid()
   }
 }

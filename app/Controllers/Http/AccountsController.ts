@@ -8,10 +8,14 @@ export default class AccountsController {
     return accounts
   }
 
-  public async show({ params }: HttpContextContract) {
+  public async show({ response, params }: HttpContextContract) {
     const { id } = params
 
     const account = await Account.findBy('id', id)
+
+    if (!account) {
+      return response.notFound('Account not found')
+    }
 
     return account
   }
@@ -32,8 +36,14 @@ export default class AccountsController {
     return account
   }
 
-  public async update({ request, params }: HttpContextContract) {
+  public async update({ request, response, params }: HttpContextContract) {
     const { id } = params
+
+    const account = await Account.findBy('id', id)
+
+    if (!account) {
+      return response.notFound('Account not found')
+    }
 
     const email = request.input('email')
     const password = request.input('password')
@@ -47,11 +57,9 @@ export default class AccountsController {
       ...(balance && { balance }),
     }
 
-    const account = await Account.findBy('id', id)
+    account.merge(dataToUpdate)
 
-    account?.merge(dataToUpdate)
-
-    await account?.save()
+    await account.save()
 
     return account
   }
@@ -60,6 +68,10 @@ export default class AccountsController {
     const { id } = params
 
     const account = await Account.findBy('id', id)
+
+    if (!account) {
+      return response.notFound('Account not found!')
+    }
 
     await account?.delete()
 

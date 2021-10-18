@@ -18,14 +18,4 @@
 |
 */
 
-import Route from '@ioc:Adonis/Core/Route'
-
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
-
-Route.get('/accounts', 'AccountsController.index')
-Route.get('/accounts/:id', 'AccountsController.show')
-Route.post('/accounts', 'AccountsController.store')
-Route.put('/accounts/:id', 'AccountsController.update')
-Route.delete('accounts/:id', 'AccountsController.destroy')
+import './routes/accounts'
